@@ -24,18 +24,3 @@ with open("article_urls.txt", "r") as infile, open("subjective.data", "w") as su
 		else:
 			objective.write("%s\n\n" % article_text.encode("utf8"))
 
-
-# # the two corpuses that will be created
-# subjective = open("subjective.data", "w")
-# objective = open("objective.data", "w")
-
-# for article in articles:
-# 	content = article.split("\t")
-# 	article_text = scrape_data(content[1].strip())
-
-# 	if content[0] == "OpEd":
-# 		subjective.write("%s%s" % (article_text.encode("utf8"), "\n\n"))
-# 		subjective.write("==============================\n\n")
-# 	else:
-# 		objective.write("%s%s" % (article_text.encode("utf8"), "\n\n"))
-# 		objective.write("==============================\n\n")
