@@ -1,6 +1,9 @@
 import numpy
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import LinearSVC
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfTransformer
 
 
 class Classifier:
@@ -24,15 +27,27 @@ class Classifier:
 	def vectorizeCounts(self):
 		self.counts = self.count_vectorizer.fit_transform(numpy.asarray(self.text))
 
+	def termFrequencies(self):
+		tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
+		self.frequencies = tf_transformer.transform(self.counts)
+
 	def multinomialNB(self):
 		self.classifier = MultinomialNB()
 		targets = numpy.asarray(self.labels)
-		self.classifier.fit(self.counts, targets)
+		self.classifier.fit(self.frequencies, targets)
 
 	def predict(self, examples):
 		example_counts = self.count_vectorizer.transform(examples)
 		predictions = self.classifier.predict(example_counts)
 		return predictions
+
+	def linearSVC(self):
+  		self.classifier = LinearSVC()
+  		self.classifier.fit(self.frequencies, self.labels)
+
+
+
+
 
 objective_file = open("objective.data", "r")
 subjective_file = open("subjective.data", "r")
@@ -42,8 +57,14 @@ subjective_text = subjective_file.read().split("\n\n")
 
 c = Classifier(objective_text, subjective_text)
 c.vectorizeCounts()
+c.termFrequencies()
+
+c.linearSVC()
+print c.predict(["this is a test", "Obamacare will destroy the country", "Obamacare is horrible don't use it"])
+
 c.multinomialNB()
-print c.predict(["this is a test", "fuck Obamacare", "Obamacare is horrible don't use it"])
+print c.predict(["this is a test", "Obamacare will destroy the country", "Obamacare is horrible don't use it"])
+
 
 
 # SUBJECTIVE = 0
