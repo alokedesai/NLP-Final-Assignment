@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, NuSVC
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import f1_score
 import random
@@ -27,7 +27,7 @@ class Classifier:
 		self.frequencies = tf_transformer.transform(self.counts)
 
 	def multinomialNB(self):
-		self.classifier = MultinomialNB(alpha=.0001)
+		self.classifier = MultinomialNB(alpha=.00001)
 		self.classifier.fit(self.frequencies, self.labels)
 
 	def predict(self, examples):
@@ -37,6 +37,10 @@ class Classifier:
 
 	def linearSVC(self):
   		self.classifier = LinearSVC()
+  		self.classifier.fit(self.frequencies, self.labels)
+
+  	def nuSVC(self):
+  		self.classifier = NuSVC()
   		self.classifier.fit(self.frequencies, self.labels)
 
   	def accurracy(self, text, labels):
@@ -72,9 +76,13 @@ c = Classifier(objective_text, subjective_text)
 
 
 c.linearSVC()
-print "SVM accuracy: %f" % c.accurracy(test_data, labels)
-print "SVM F1: %f" % c.f1(test_data, labels)
+print "Linear SVC accuracy: %f" % c.accurracy(test_data, labels)
+print "Linear SVC F1: %f" % c.f1(test_data, labels)
 
 c.multinomialNB()
 print "Multinomial accuracy: %f" % c.accurracy(test_data, labels)
 print "Multinomial F1: %f" % c.f1(test_data, labels)
+
+c.nuSVC()
+print "Nu-Support SVM accuracy: %f" % c.accurracy(test_data, labels)
+print "Nu-Support SVM F1: %f" % c.f1(test_data, labels)
