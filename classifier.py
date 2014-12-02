@@ -3,6 +3,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import f1_score
+import random
 
 class Classifier:
 
@@ -37,7 +38,7 @@ class Classifier:
 	# 	self.frequencies = tf_transformer.transform(self.counts)
 
 	def multinomialNB(self):
-		self.classifier = MultinomialNB(alpha=0.00001)
+		self.classifier = MultinomialNB()
 		self.classifier.fit(self.counts, self.labels)
 
 	def predict(self, examples):
@@ -72,10 +73,14 @@ objective_test = open("data/objective_test.data","r").readlines()
 subjective_test = open("data/subjective_test.data","r").readlines()
 test_data = objective_test + subjective_test
 labels = [0 for i in range(len(objective_test))] + [1 for i in range(len(subjective_test))]
+# tuple_list = [(test_data[i], labels[i]) for i in range(200)]
+# random.shuffle(tuple_list)
+# new_test_data = [x for x,y in tuple_list]
+# new_labels = [y for x,y in tuple_list]
+
 
 c = Classifier(objective_text, subjective_text)
-# c.vectorizeCounts()
-# c.termFrequencies()
+
 
 c.linearSVC()
 print "SVM accuracy: %f" % c.accurracy(test_data, labels)
