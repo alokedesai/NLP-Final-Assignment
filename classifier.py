@@ -26,17 +26,6 @@ class Classifier:
 		# tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
 		# self.frequencies = tf_transformer.transform(self.counts)
 
-
-# throw out words that only occur 2 or 3 times
-# mutual information for feature selection
-
-	# def vectorizeCounts(self):
-	# 	# self.counts =
-
-	# def termFrequencies(self):
-	# 	tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
-	# 	self.frequencies = tf_transformer.transform(self.counts)
-
 	def multinomialNB(self):
 		self.classifier = MultinomialNB()
 		self.classifier.fit(self.counts, self.labels)
