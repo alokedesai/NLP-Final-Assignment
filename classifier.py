@@ -1,13 +1,10 @@
-import numpy
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
-from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import f1_score
 
 class Classifier:
-
 	def __init__(self, objective_data, subjective_data):
 		OBJECTIVE = 0
 		SUBJECTIVE = 1
@@ -21,23 +18,21 @@ class Classifier:
 		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
 		
 		# count vectorizer and specific classifier that will be used
-		self.counts = None
+		self.counts = [[]]
 		self.classifier = None
 
-# throw out words that only occur 2 or 3 times
 # mutual information for feature selection
 
 	def vectorizeCounts(self):
-		self.counts = self.count_vectorizer.fit_transform(numpy.asarray(self.text))
+		self.counts = self.count_vectorizer.fit_transform(self.text)
 
 	def termFrequencies(self):
 		tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
 		self.frequencies = tf_transformer.transform(self.counts)
 
 	def multinomialNB(self):
-		self.classifier = MultinomialNB()
-		targets = numpy.asarray(self.labels)
-		self.classifier.fit(self.frequencies, targets)
+		self.classifier = MultinomialNB(alpha=.001)
+		self.classifier.fit(self.frequencies, self.labels)
 
 	def predict(self, examples):
 		example_counts = self.count_vectorizer.transform(examples)
