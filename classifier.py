@@ -56,8 +56,9 @@ class Classifier:
   				accurracy += 1
   		return accurracy / float(len(prediction))
 
-  	def f1(self, actual, predicted):
-  		return f1_score(actual, predicted)
+  	def f1(self, text, actual):
+  		prediction = self.predict(text)
+  		return f1_score(actual, prediction)
 
 objective_file = open("data/objective_train.data", "r")
 subjective_file = open("data/subjective_train.data", "r")
@@ -77,6 +78,8 @@ c.termFrequencies()
 
 c.linearSVC()
 print "SVM accuracy: %f" % c.accurracy(test_data, labels)
+print "SVM F1: %f" % c.f1(test_data, labels)
 
 c.multinomialNB()
-print c.accurracy(test_data, labels)
+print "Multinomial accuracy: %f" % c.accurracy(test_data, labels)
+print "Multinomial F1: %f" % c.f1(test_data, labels)
