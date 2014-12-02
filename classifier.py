@@ -18,11 +18,14 @@ class Classifier:
 		self.text = objective_data + subjective_data
 		self.labels = [0 for i in objective_data] + [1 for i in subjective_data]
 
-		self.count_vectorizer = CountVectorizer()
+		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
 		
 		# count vectorizer and specific classifier that will be used
 		self.counts = None
 		self.classifier = None
+
+# throw out words that only occur 2 or 3 times
+# mutual information for feature selection
 
 	def vectorizeCounts(self):
 		self.counts = self.count_vectorizer.fit_transform(numpy.asarray(self.text))
@@ -45,54 +48,35 @@ class Classifier:
   		self.classifier = LinearSVC()
   		self.classifier.fit(self.frequencies, self.labels)
 
+  	def computeAccurracy(self, text, labels):
+  		prediction = self.predict(text)
+  		accurracy = 0
+  		for i in range(len(prediction)):
+  			if prediction[i] == labels[i]:
+  				accurracy += 1
+  		return accurracy / float(len(prediction))
 
 
 
 
-objective_file = open("objective.data", "r")
-subjective_file = open("subjective.data", "r")
+objective_file = open("data/objective_train.data", "r")
+subjective_file = open("data/subjective_train.data", "r")
 
-objective_text = objective_file.read().split("\n\n")
-subjective_text = subjective_file.read().split("\n\n")
+objective_text = objective_file.readlines()
+subjective_text = subjective_file.readlines()
+
+# create testing data
+objective_test = open("data/objective_test.data","r").readlines()
+subjective_test = open("data/subjective_test.data","r").readlines()
+test_data = objective_test + subjective_test
+labels = [0 for i in range(len(objective_test))] + [1 for i in range(len(subjective_test))]
 
 c = Classifier(objective_text, subjective_text)
 c.vectorizeCounts()
 c.termFrequencies()
 
 c.linearSVC()
-print c.predict(["this is a test", "Obamacare will destroy the country", "Obamacare is horrible don't use it"])
+print c.computeAccurracy(test_data, labels)
 
 c.multinomialNB()
-print c.predict(["this is a test", "Obamacare will destroy the country", "Obamacare is horrible don't use it"])
-
-
-
-# SUBJECTIVE = 0
-# OBJECTIVE = 1
-
-# data = DataFrame({'text': [], 'class': []})
-
-# objective_file = open("objective.data", "r")
-# subjective_file = open("subjective.data", "r")
-
-# objective_text = objective_file.read()
-# subjective_text = subjective_file.read()
-
-# for line in objective_text.split("\n\n"):
-# 	data = data.append(DataFrame({'text': [line], 'class': [1]}))
-
-# for line in subjective_text.split("\n\n"):
-# 	data = data.append(DataFrame({'text': [line], 'class': [0]}))
-
-# count_vectorizer = CountVectorizer()
-# counts = count_vectorizer.fit_transform(numpy.asarray(data['text']))
-
-# classifier = MultinomialNB()
-# targets = numpy.asarray(data["class"])
-# classifier.fit(counts, targets)
-
-# examples = ["Obamacare will be an utter disaster and it will fail miserably . We shouldn't use it at all"]
-
-# example_counts = count_vectorizer.transform(examples)
-# predictions = classifier.predict(example_counts)
-# print predictions
+print c.computeAccurracy(test_data, labels)
