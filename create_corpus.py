@@ -29,7 +29,7 @@ with open("article_urls.txt", "r") as infile, open("subjective.data", "w") as su
 		article_text = scrape_data(url.strip())
 		print 'i'
 		if type == "OpEd":
-			subjective.write("%s\n\n" % article_text.encode("utf8"))
+			subjective.write("%s\n" % article_text.encode("utf8"))
 		else:
-			objective.write("%s\n\n" % article_text.encode("utf8"))
+			objective.write("%s\n" % article_text.encode("utf8"))
 
