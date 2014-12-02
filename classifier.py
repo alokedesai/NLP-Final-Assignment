@@ -16,23 +16,29 @@ class Classifier:
 		self.labels = [OBJECTIVE for i in objective_data] + [SUBJECTIVE for i in subjective_data]
 
 		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
-		
+
 		# count vectorizer and specific classifier that will be used
-		self.counts = [[]]
+
+		self.counts = self.count_vectorizer.fit_transform(self.text)
 		self.classifier = None
 
+		# tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
+		# self.frequencies = tf_transformer.transform(self.counts)
+
+
+# throw out words that only occur 2 or 3 times
 # mutual information for feature selection
 
-	def vectorizeCounts(self):
-		self.counts = self.count_vectorizer.fit_transform(self.text)
+	# def vectorizeCounts(self):
+	# 	# self.counts =
 
-	def termFrequencies(self):
-		tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
-		self.frequencies = tf_transformer.transform(self.counts)
+	# def termFrequencies(self):
+	# 	tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
+	# 	self.frequencies = tf_transformer.transform(self.counts)
 
 	def multinomialNB(self):
-		self.classifier = MultinomialNB(alpha=.001)
-		self.classifier.fit(self.frequencies, self.labels)
+		self.classifier = MultinomialNB(alpha=0.00001)
+		self.classifier.fit(self.counts, self.labels)
 
 	def predict(self, examples):
 		example_counts = self.count_vectorizer.transform(examples)
@@ -41,7 +47,7 @@ class Classifier:
 
 	def linearSVC(self):
   		self.classifier = LinearSVC()
-  		self.classifier.fit(self.frequencies, self.labels)
+  		self.classifier.fit(self.counts, self.labels)
 
   	def accurracy(self, text, labels):
   		prediction = self.predict(text)
@@ -68,8 +74,8 @@ test_data = objective_test + subjective_test
 labels = [0 for i in range(len(objective_test))] + [1 for i in range(len(subjective_test))]
 
 c = Classifier(objective_text, subjective_text)
-c.vectorizeCounts()
-c.termFrequencies()
+# c.vectorizeCounts()
+# c.termFrequencies()
 
 c.linearSVC()
 print "SVM accuracy: %f" % c.accurracy(test_data, labels)
