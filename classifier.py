@@ -23,12 +23,12 @@ class Classifier:
 		self.counts = self.count_vectorizer.fit_transform(self.text)
 		self.classifier = None
 
-		# tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
-		# self.frequencies = tf_transformer.transform(self.counts)
+		tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
+		self.frequencies = tf_transformer.transform(self.counts)
 
 	def multinomialNB(self):
 		self.classifier = MultinomialNB(alpha=.0001)
-		self.classifier.fit(self.counts, self.labels)
+		self.classifier.fit(self.frequencies, self.labels)
 
 	def predict(self, examples):
 		example_counts = self.count_vectorizer.transform(examples)
@@ -37,7 +37,7 @@ class Classifier:
 
 	def linearSVC(self):
   		self.classifier = LinearSVC()
-  		self.classifier.fit(self.counts, self.labels)
+  		self.classifier.fit(self.frequencies, self.labels)
 
   	def accurracy(self, text, labels):
   		prediction = self.predict(text)
