@@ -27,7 +27,7 @@ class Classifier:
 		# self.frequencies = tf_transformer.transform(self.counts)
 
 	def multinomialNB(self):
-		self.classifier = MultinomialNB()
+		self.classifier = MultinomialNB(alpha=.0001)
 		self.classifier.fit(self.counts, self.labels)
 
 	def predict(self, examples):
