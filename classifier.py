@@ -16,7 +16,7 @@ class Classifier:
 		self.subjective_data = subjective_data
 
 		self.text = objective_data + subjective_data
-		self.labels = [0 for i in objective_data] + [1 for i in subjective_data]
+		self.labels = [OBJECTIVE for i in objective_data] + [SUBJECTIVE for i in subjective_data]
 
 		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
 		
