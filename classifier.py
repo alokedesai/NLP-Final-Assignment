@@ -4,7 +4,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfTransformer
-
+from sklearn.metrics import f1_score
 
 class Classifier:
 
@@ -48,7 +48,7 @@ class Classifier:
   		self.classifier = LinearSVC()
   		self.classifier.fit(self.frequencies, self.labels)
 
-  	def computeAccurracy(self, text, labels):
+  	def accurracy(self, text, labels):
   		prediction = self.predict(text)
   		accurracy = 0
   		for i in range(len(prediction)):
@@ -56,8 +56,8 @@ class Classifier:
   				accurracy += 1
   		return accurracy / float(len(prediction))
 
-
-
+  	def f1(self, actual, predicted):
+  		return f1_score(actual, predicted)
 
 objective_file = open("data/objective_train.data", "r")
 subjective_file = open("data/subjective_train.data", "r")
@@ -76,7 +76,7 @@ c.vectorizeCounts()
 c.termFrequencies()
 
 c.linearSVC()
-print c.computeAccurracy(test_data, labels)
+print "SVM accuracy: %f" % c.accurracy(test_data, labels)
 
 c.multinomialNB()
-print c.computeAccurracy(test_data, labels)
+print c.accurracy(test_data, labels)
