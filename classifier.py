@@ -32,7 +32,7 @@ class Classifier:
 
 	def predict(self, examples):
 		example_counts = self.count_vectorizer.transform(examples)
-		example_tf = self.tf_transformer.fit_transform(example_counts)
+		example_tf = self.tf_transformer.transform(example_counts)
 		predictions = self.classifier.predict(example_tf)
 		return predictions
 
