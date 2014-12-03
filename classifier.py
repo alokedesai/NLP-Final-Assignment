@@ -3,30 +3,18 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC, NuSVC
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics import f1_score
+from sklearn.cross_validation import train_test_split
 import random
 
 class Classifier:
-	def __init__(self, objective_data, subjective_data):
+	def __init__(self, data, labels):
 		OBJECTIVE = 0
 		SUBJECTIVE = 1
 
-		self.objective_data = objective_data
-		self.subjective_data = subjective_data
-
-		self.text = objective_data + subjective_data
-
-		self.labels = [OBJECTIVE for i in objective_data] + [SUBJECTIVE for i in subjective_data]
-
-		tuple_list = zip(self.text, self.labels)
-
-		random.shuffle(tuple_list)
-
-		self.text = [x for x,y in tuple_list]
-		self.label = [y for x,y in tuple_list]
+		self.text = data
+		self.labels = labels
 
 		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
-
-		# count vectorizer and specific classifier that will be used
 
 		self.counts = self.count_vectorizer.fit_transform(self.text)
 		self.classifier = None
@@ -64,29 +52,26 @@ class Classifier:
   		prediction = self.predict(text)
   		return f1_score(actual, prediction)
 
-objective_file = open("data/objective_train.data", "r")
-subjective_file = open("data/subjective_train.data", "r")
+objective_text = open("data/objective.data", "r").readlines()
+subjective_text = open("data/subjective_long.data", "r").readlines()
 
-objective_text = objective_file.readlines()
-subjective_text = subjective_file.readlines()
+OBJECTIVE = 0
+SUBJECTIVE = 1
 
-# create testing data
-objective_test = open("data/objective_test.data","r").readlines()
-subjective_test = open("data/subjective_test.data","r").readlines()
-test_data = objective_test + subjective_test
-labels = [0 for i in range(len(objective_test))] + [1 for i in range(len(subjective_test))]
+data = objective_text + subjective_text
+labels = [OBJECTIVE for i in objective_text] + [SUBJECTIVE for i in subjective_text]
 
+data_train, data_test, labels_train, labels_test = train_test_split(data,labels, test_size=.1, random_state=42)
 
-c = Classifier(objective_text, subjective_text)
-
+c = Classifier(data_train, labels_train)
 
 c.linearSVC()
-print "Linear SVC accuracy: %f" % c.accurracy(test_data, labels)
-print "Linear SVC F1: %f" % c.f1(test_data, labels)
+print "Linear SVC accuracy: %f" % c.accurracy(data_test, labels_test)
+print "Linear SVC F1: %f" % c.f1(data_test, labels_test)
 
 c.multinomialNB()
-print "Multinomial accuracy: %f" % c.accurracy(test_data, labels)
-print "Multinomial F1: %f" % c.f1(test_data, labels)
+print "Multinomial accuracy: %f" % c.accurracy(data_test, labels_test)
+print "Multinomial F1: %f" % c.f1(data_test, labels_test)
 
 # c.nuSVC()
 # print "Nu-Support SVM accuracy: %f" % c.accurracy(test_data, labels)
