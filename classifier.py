@@ -23,16 +23,17 @@ class Classifier:
 		self.counts = self.count_vectorizer.fit_transform(self.text)
 		self.classifier = None
 
-		tf_transformer = TfidfTransformer(use_idf=False).fit(self.counts)
-		self.frequencies = tf_transformer.transform(self.counts)
+		self.tf_transformer = TfidfTransformer(use_idf=False)
+		self.frequencies = self.tf_transformer.fit_transform(self.counts)
 
 	def multinomialNB(self):
-		self.classifier = MultinomialNB(alpha=.00001)
+		self.classifier = MultinomialNB(alpha=.001)
 		self.classifier.fit(self.frequencies, self.labels)
 
 	def predict(self, examples):
 		example_counts = self.count_vectorizer.transform(examples)
-		predictions = self.classifier.predict(example_counts)
+		example_tf = self.tf_transformer.fit_transform(example_counts)
+		predictions = self.classifier.predict(example_tf)
 		return predictions
 
 	def linearSVC(self):
@@ -83,6 +84,6 @@ c.multinomialNB()
 print "Multinomial accuracy: %f" % c.accurracy(test_data, labels)
 print "Multinomial F1: %f" % c.f1(test_data, labels)
 
-c.nuSVC()
-print "Nu-Support SVM accuracy: %f" % c.accurracy(test_data, labels)
-print "Nu-Support SVM F1: %f" % c.f1(test_data, labels)
+# c.nuSVC()
+# print "Nu-Support SVM accuracy: %f" % c.accurracy(test_data, labels)
+# print "Nu-Support SVM F1: %f" % c.f1(test_data, labels)
