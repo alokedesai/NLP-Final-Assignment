@@ -14,7 +14,15 @@ class Classifier:
 		self.subjective_data = subjective_data
 
 		self.text = objective_data + subjective_data
+
 		self.labels = [OBJECTIVE for i in objective_data] + [SUBJECTIVE for i in subjective_data]
+
+		tuple_list = zip(self.text, self.labels)
+
+		random.shuffle(tuple_list)
+
+		self.text = [x for x,y in tuple_list]
+		self.label = [y for x,y in tuple_list]
 
 		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
 
@@ -23,7 +31,7 @@ class Classifier:
 		self.counts = self.count_vectorizer.fit_transform(self.text)
 		self.classifier = None
 
-		self.tf_transformer = TfidfTransformer(use_idf=False)
+		self.tf_transformer = TfidfTransformer(use_idf=True)
 		self.frequencies = self.tf_transformer.fit_transform(self.counts)
 
 	def multinomialNB(self):
@@ -67,10 +75,6 @@ objective_test = open("data/objective_test.data","r").readlines()
 subjective_test = open("data/subjective_test.data","r").readlines()
 test_data = objective_test + subjective_test
 labels = [0 for i in range(len(objective_test))] + [1 for i in range(len(subjective_test))]
-# tuple_list = [(test_data[i], labels[i]) for i in range(200)]
-# random.shuffle(tuple_list)
-# new_test_data = [x for x,y in tuple_list]
-# new_labels = [y for x,y in tuple_list]
 
 
 c = Classifier(objective_text, subjective_text)
