@@ -17,6 +17,7 @@ class Classifier:
 		self.count_vectorizer = CountVectorizer(stop_words="english", min_df=3)
 
 		self.counts = self.count_vectorizer.fit_transform(self.text)
+
 		self.classifier = None
 
 		self.tf_transformer = TfidfTransformer(use_idf=True)
@@ -52,8 +53,8 @@ class Classifier:
   		prediction = self.predict(text)
   		return f1_score(actual, prediction)
 
-objective_text = open("data/objective.data", "r").readlines()
-subjective_text = open("data/subjective_long.data", "r").readlines()
+objective_text = open("data/objective.sorted", "r").readlines()
+subjective_text = open("data/subjective_long.sorted", "r").readlines()
 
 OBJECTIVE = 0
 SUBJECTIVE = 1
