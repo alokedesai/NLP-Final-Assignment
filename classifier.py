@@ -54,7 +54,7 @@ class Classifier:
   		return f1_score(actual, prediction)
 
 objective_text = open("data/objective.sorted", "r").readlines()
-subjective_text = open("data/subjective_long.sorted", "r").readlines()
+subjective_text = open("data/subjective.data", "r").readlines()
 
 OBJECTIVE = 0
 SUBJECTIVE = 1
